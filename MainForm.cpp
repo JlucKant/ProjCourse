@@ -63,70 +63,94 @@ void UvixArray(float* Uvix, float* Uvx, int n) {
 }
 
 
-
-//calculating fault
-void fault(float tk, float tn, int n, int massive,float fault_) {
-	float fault=fault_;
+System::Void ProjCourse::MainForm::button3_Click(System::Object^ sender, System::EventArgs^ e) {
 	float p = 1;
-	float param = pow(2.f, 20.f);
-
-	while (p >= fault) {
-		float* Uvx = new float[n];
-		float* Uvix = new float[n];
-		float* t = new float[n];
-		float dt = (tk - tn) / (n - 1);
-		timeArray(t, n);
-		float param1;
-		if (massive == 1) {
-			UvxArray(Uvx, t, n);
-			param1 = parameter(Uvx, funcmax(n, Uvx), n - 1, dt);
-		}
-		else {
-			UvxArray(Uvx, t, n);
-			UvixArray(Uvix, Uvx, n);
-			param1 = parameter(Uvx, funcmax(n, Uvix), n - 1, dt);
-		}
-
-		p = fabs(param - param1) / param1;
-
-		param = param1;
-		n *= 2;
-	}
-}
-System::Void ProjCourse::MainForm::button1_Click(System::Object^ sender, System::EventArgs^ e) {
-	this->chart1->Series[0]->Points->Clear();
-	this->chart2->Series[0]->Points->Clear();
 	int n;
-	float fault_;
+	float param = pow(2.f, 20.f);
+	float fault;
+	this->textBox3->Text = "";
 	try {
-		n = Int32::Parse(textBox1->Text);
-		if (n < 2 || n >1000) e;
-		else {
-			fault_ = float::Parse(textBox5->Text);
+		fault = float::Parse(textBox5->Text);
+		if (this->textBox1->Text != "") {
+			n = Int32::Parse(this->textBox1->Text);
+		}
+		else n = 11;
+		this->textBox3->Text += "N\tParameter\tFault\r\n";
+		while (p >= fault) {
 			float* Uvx = new float[n];
 			float* Uvix = new float[n];
 			float* t = new float[n];
 			float tn = 15, tk = 100;
+			float dt = (tk - tn) / (n - 1);
+			timeArray(t, n);
+			float param1;
+			UvxArray(Uvx, t, n);
+			UvixArray(Uvix, Uvx, n);
+			param1 = parameter(Uvix, funcmax(n, Uvix), n - 1, dt);
 
+			p = fabs(param - param1) / param1;
+			this->textBox3->Text += n + "\t" + param + "\t" + p + "\r\n";
+			param = param1;
+			n *= 2;
+			delete[] t;
+			delete[] Uvx;
+			delete[] Uvix;
+		}
+	}
+	catch (...) {
+		MessageBox::Show("Incorrect type of data", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		textBox5->Text = "";
+	}
+	
+}
+
+System::Void ProjCourse::MainForm::button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	this->chart1->Series[0]->Points->Clear();
+	this->chart2->Series[0]->Points->Clear();
+	textBox2->Text = "";
+	int n;
+	try {
+		n = Int32::Parse(textBox1->Text);
+		if (n < 2 || n >1000) { MessageBox::Show("Out of range", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning); textBox1->Text = ""; textBox5->Text = ""; }
+		else {
+			float* Uvx = new float[n];
+			float* Uvix = new float[n];
+			float* t = new float[n];
+			float tn = 15, tk = 100;
+			this->textBox2->Text += "N\tt\tUvx\tUvix\r\n";
 			timeArray(t, n);
 			UvxArray(Uvx, t, n);
 			UvixArray(Uvix, Uvx, n);
 			for (int i = 0; i < n; i++) {
 				this->chart1->Series[0]->Points->AddXY(t[i], Uvx[i]);
 				this->chart2->Series[0]->Points->AddXY(t[i], Uvix[i]);
-				this->textBox2->Text += t[i].ToString() + "\t" + Uvx[i].ToString() + "\t" + Uvix[i].ToString()+"\n";
+				this->textBox2->Text += (i + 1).ToString() + "\t" + ((float(round(t[i] * 100)) / 100.f)).ToString() + "\t" + ((float(round(Uvx[i] * 100)) / 100.f)).ToString() + "\t" + ((float(round(Uvix[i] * 100)) / 100.f)).ToString() + "\r\n";
+				
 			}
+			this->chart1->ChartAreas[0]->AxisX->Maximum = t[n - 1];
+			this->chart1->ChartAreas[0]->AxisX->Minimum = t[0];
+			this->chart2->ChartAreas[0]->AxisX->Maximum = t[n - 1];
+			this->chart2->ChartAreas[0]->AxisX->Minimum = t[0];
+			
+			
+			delete[] t;
+			delete[] Uvx;
+			delete[] Uvix;
 
-			fault(tk, tn, n, 1, fault_);
-			fault(tk, tn, n, 2, fault_);
 		}
 	}
 	catch (FormatException^ e) {
-		MessageBox::Show("Некорректный ввод", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-	}
-	
-	
+		MessageBox::Show("Incorrect type of data", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		textBox5->Text = "";
+		textBox1->Text = "";
+	}	
 }
+
+System::Void ProjCourse::MainForm::button2_Click(System::Object^ sender, System::EventArgs^ e) {
+	MessageBox::Show("Dementiev Mikhail IKVT-31", "Author", MessageBoxButtons::OK, MessageBoxIcon::Information);
+
+}
+
 //System::Void ProjCourse::MainForm::textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
 //	try {
 //		int a = Int32::Parse(textBox1->Text);
@@ -137,5 +161,10 @@ System::Void ProjCourse::MainForm::button1_Click(System::Object^ sender, System:
 //}
 //
 //System::Void ProjCourse::MainForm::textBox5_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-//
+//	try {
+//		int a = Int32::Parse(textBox5->Text);
+//	}
+//	catch (FormatException^) {
+//		textBox5->Text = "";
+//	}
 //}
