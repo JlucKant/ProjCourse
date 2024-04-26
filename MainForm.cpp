@@ -98,7 +98,7 @@ System::Void ProjCourse::MainForm::button3_Click(System::Object^ sender, System:
 		}
 	}
 	catch (...) {
-		MessageBox::Show("Incorrect type of data", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		MessageBox::Show("Введенные значения за пределами допустимых!", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		textBox5->Text = "";
 	}
 	
@@ -111,7 +111,7 @@ System::Void ProjCourse::MainForm::button1_Click(System::Object^ sender, System:
 	int n;
 	try {
 		n = Int32::Parse(textBox1->Text);
-		if (n < 2 || n >1000) { MessageBox::Show("Out of range", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning); textBox1->Text = ""; textBox5->Text = ""; }
+		if (n < 2 || n >1000) { MessageBox::Show("Введенные значения за пределами допустимых!", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning); textBox1->Text = ""; textBox5->Text = ""; }
 		else {
 			float* Uvx = new float[n];
 			float* Uvix = new float[n];
@@ -127,6 +127,8 @@ System::Void ProjCourse::MainForm::button1_Click(System::Object^ sender, System:
 				this->textBox2->Text += (i + 1).ToString() + "\t" + ((float(round(t[i] * 100)) / 100.f)).ToString() + "\t" + ((float(round(Uvx[i] * 100)) / 100.f)).ToString() + "\t" + ((float(round(Uvix[i] * 100)) / 100.f)).ToString() + "\r\n";
 				
 			}
+			this->chart1->ChartAreas[0]->AxisX->Interval = 5;
+			this->chart2->ChartAreas[0]->AxisX->Interval = 5;
 			this->chart1->ChartAreas[0]->AxisX->Maximum = t[n - 1];
 			this->chart1->ChartAreas[0]->AxisX->Minimum = t[0];
 			this->chart2->ChartAreas[0]->AxisX->Maximum = t[n - 1];
@@ -140,14 +142,14 @@ System::Void ProjCourse::MainForm::button1_Click(System::Object^ sender, System:
 		}
 	}
 	catch (FormatException^ e) {
-		MessageBox::Show("Incorrect type of data", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		MessageBox::Show("Неверный тип данных!", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		textBox5->Text = "";
 		textBox1->Text = "";
 	}	
 }
 
 System::Void ProjCourse::MainForm::button2_Click(System::Object^ sender, System::EventArgs^ e) {
-	MessageBox::Show("Dementiev Mikhail IKVT-31", "Author", MessageBoxButtons::OK, MessageBoxIcon::Information);
+	MessageBox::Show("Автор: Дементьев Михаил\nГруппа: ИКВТ-31\nВариант: 129", "Курсовая работа", MessageBoxButtons::OK, MessageBoxIcon::Information);
 
 }
 
