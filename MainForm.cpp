@@ -71,34 +71,37 @@ System::Void ProjCourse::MainForm::button3_Click(System::Object^ sender, System:
 	this->textBox3->Text = "";
 	try {
 		fault = float::Parse(textBox5->Text);
-		if (this->textBox1->Text != "") {
-			n = Int32::Parse(this->textBox1->Text);
-		}
-		else n = 11;
-		this->textBox3->Text += "N\tParameter\tFault\r\n";
-		while (p >= fault) {
-			float* Uvx = new float[n];
-			float* Uvix = new float[n];
-			float* t = new float[n];
-			float tn = 15, tk = 100;
-			float dt = (tk - tn) / (n - 1);
-			timeArray(t, n);
-			float param1;
-			UvxArray(Uvx, t, n);
-			UvixArray(Uvix, Uvx, n);
-			param1 = parameter(Uvix, funcmax(n, Uvix), n - 1, dt);
+		if (fault > 1) { MessageBox::Show("Values out of range!", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning); textBox5->Text = ""; }
+		else {
+			if (this->textBox1->Text != "") {
+				n = Int32::Parse(this->textBox1->Text);
+			}
+			else n = 11;
+			this->textBox3->Text += "N\tParameter\tFault\r\n";
+			while (p >= fault) {
+				float* Uvx = new float[n];
+				float* Uvix = new float[n];
+				float* t = new float[n];
+				float tn = 15, tk = 100;
+				float dt = (tk - tn) / (n - 1);
+				timeArray(t, n);
+				float param1;
+				UvxArray(Uvx, t, n);
+				UvixArray(Uvix, Uvx, n);
+				param1 = parameter(Uvix, funcmax(n, Uvix), n - 1, dt);
 
-			p = fabs(param - param1) / param1;
-			this->textBox3->Text += n + "\t" + param + "\t" + p + "\r\n";
-			param = param1;
-			n *= 2;
-			delete[] t;
-			delete[] Uvx;
-			delete[] Uvix;
+				p = fabs(param - param1) / param1;
+				this->textBox3->Text += n + "\t" + param + "\t" + p + "\r\n";
+				param = param1;
+				n *= 2;
+				delete[] t;
+				delete[] Uvx;
+				delete[] Uvix;
+			}
 		}
 	}
 	catch (...) {
-		MessageBox::Show("Введенные значения за пределами допустимых!", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		MessageBox::Show("Incorrect types of data!", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		textBox5->Text = "";
 	}
 	
@@ -111,7 +114,7 @@ System::Void ProjCourse::MainForm::button1_Click(System::Object^ sender, System:
 	int n;
 	try {
 		n = Int32::Parse(textBox1->Text);
-		if (n < 2 || n >1000) { MessageBox::Show("Введенные значения за пределами допустимых!", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning); textBox1->Text = ""; textBox5->Text = ""; }
+		if (n < 2 || n >1000) { MessageBox::Show("Values out of range!", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning); textBox1->Text = ""; textBox5->Text = ""; }
 		else {
 			float* Uvx = new float[n];
 			float* Uvix = new float[n];
@@ -142,31 +145,14 @@ System::Void ProjCourse::MainForm::button1_Click(System::Object^ sender, System:
 		}
 	}
 	catch (FormatException^ e) {
-		MessageBox::Show("Неверный тип данных!", "Ошибка", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+		MessageBox::Show("Incorrect types of data!", "Error", MessageBoxButtons::OK, MessageBoxIcon::Warning);
 		textBox5->Text = "";
 		textBox1->Text = "";
 	}	
 }
 
 System::Void ProjCourse::MainForm::button2_Click(System::Object^ sender, System::EventArgs^ e) {
-	MessageBox::Show("Автор: Дементьев Михаил\nГруппа: ИКВТ-31\nВариант: 129", "Курсовая работа", MessageBoxButtons::OK, MessageBoxIcon::Information);
+	MessageBox::Show("Author: Dementiev Mikhail Evgenievich\nGroup: IKVT-31\nVariant: 129", "Course work", MessageBoxButtons::OK, MessageBoxIcon::Information);
 
 }
 
-//System::Void ProjCourse::MainForm::textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-//	try {
-//		int a = Int32::Parse(textBox1->Text);
-//	}
-//	catch (FormatException^) {
-//		textBox1->Text = "";
-//	}
-//}
-//
-//System::Void ProjCourse::MainForm::textBox5_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-//	try {
-//		int a = Int32::Parse(textBox5->Text);
-//	}
-//	catch (FormatException^) {
-//		textBox5->Text = "";
-//	}
-//}
