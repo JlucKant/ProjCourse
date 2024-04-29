@@ -77,7 +77,6 @@ System::Void ProjCourse::MainForm::button3_Click(System::Object^ sender, System:
 				n = Int32::Parse(this->textBox1->Text);
 			}
 			else n = 11;
-			this->textBox3->Text += "N\tParameter\tFault\r\n";
 			while (p >= fault) {
 				float* Uvx = new float[n];
 				float* Uvix = new float[n];
@@ -91,7 +90,7 @@ System::Void ProjCourse::MainForm::button3_Click(System::Object^ sender, System:
 				param1 = parameter(Uvix, funcmax(n, Uvix), n - 1, dt);
 
 				p = fabs(param - param1) / param1;
-				this->textBox3->Text += n + "\t" + param + "\t" + p + "\r\n";
+				this->textBox3->Text += n + "\t" + ((float(round(param * 1000)) / 1000.f)).ToString() + "\t\t" + ((float(round(p * 10000)) / 10000.f)).ToString() + "\r\n";
 				param = param1;
 				n *= 2;
 				delete[] t;
@@ -120,7 +119,6 @@ System::Void ProjCourse::MainForm::button1_Click(System::Object^ sender, System:
 			float* Uvix = new float[n];
 			float* t = new float[n];
 			float tn = 15, tk = 100;
-			this->textBox2->Text += "N\tt\tUvx\tUvix\r\n";
 			timeArray(t, n);
 			UvxArray(Uvx, t, n);
 			UvixArray(Uvix, Uvx, n);
